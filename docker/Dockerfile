@@ -2,16 +2,18 @@ FROM oven/bun:1 AS build
 
 WORKDIR /app
 
+# Explicitly added ca-certificates here
 RUN apt-get update && apt-get install -y --no-install-recommends \
     chromium \
     git \
+    ca-certificates \
     && rm -rf /var/lib/apt/lists/*
 
 ENV PUPPETEER_SKIP_DOWNLOAD=true
 ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium
 
 COPY .npmrc ./
-COPY package.json ./
+COPY package.json bun.lock ./
 COPY scripts ./scripts
 RUN bun install --frozen-lockfile
 
